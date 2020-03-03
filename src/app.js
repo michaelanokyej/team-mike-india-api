@@ -4,31 +4,36 @@ const morgan = require("morgan");
 const cors = require("cors");
 const helmet = require("helmet");
 const { NODE_ENV } = require("./config");
-const errorHandler = require('./error-handler');
-const userRouter = require('./components/user-router');
-const mentorRouter = require('./components/mentor-router');
-const menteeRouter = require('./components/mentee-router');
-const postRouter = require('./components/post-router');
-
+const errorHandler = require("./error-handler");
+const userRouter = require("./components/user-router");
+const mentorRouter = require("./components/mentor-router");
+const menteeRouter = require("./components/mentee-router");
+const postRouter = require("./components/post-router");
+const channelRouter = require("./components/channel-router");
+const messageRouter = require("./components/message-router");
 
 const app = express();
 
-app.use(morgan((NODE_ENV === 'production') ? 'tiny' : 'common', {
-  skip: () => NODE_ENV === 'test'
-}))
+app.use(
+  morgan(NODE_ENV === "production" ? "tiny" : "common", {
+    skip: () => NODE_ENV === "test"
+  })
+);
 
 app.use(helmet());
 app.use(cors());
 
-app.use('/api/users', userRouter)
-app.use('/api/mentors', mentorRouter)
-app.use('/api/mentees', menteeRouter)
-app.use('/api/posts', postRouter)
+app.use("/api/users", userRouter);
+app.use("/api/mentors", mentorRouter);
+app.use("/api/mentees", menteeRouter);
+app.use("/api/posts", postRouter);
+app.use("/api/channels", channelRouter);
+app.use("/api/messages", messageRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello, world!");
 });
 
-app.use(errorHandler)
+app.use(errorHandler);
 
 module.exports = app;
