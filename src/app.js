@@ -12,6 +12,7 @@ const postRouter = require("./components/post-router");
 const channelRouter = require("./components/channel-router");
 const messageRouter = require("./components/message-router");
 const commentRouter = require("./components/comment-router");
+const authRouter = require("./components/auth-router");
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use("/api/posts", postRouter);
 app.use("/api/channels", channelRouter);
 app.use("/api/messages", messageRouter);
 app.use("/api/comments", commentRouter);
+app.use("/api/auth", authRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello, world!");
