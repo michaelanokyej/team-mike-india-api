@@ -11,6 +11,7 @@ const menteeRouter = require("./components/mentee-router");
 const postRouter = require("./components/post-router");
 const channelRouter = require("./components/channel-router");
 const messageRouter = require("./components/message-router");
+const commentRouter = require("./components/comment-router");
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use("/api/mentees", menteeRouter);
 app.use("/api/posts", postRouter);
 app.use("/api/channels", channelRouter);
 app.use("/api/messages", messageRouter);
+app.use("/api/comments", commentRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello, world!");
