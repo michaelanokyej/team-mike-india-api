@@ -2,7 +2,7 @@ const logger = require("../logger");
 
 const NO_ERRORS = null;
 
-function getMentorValidationError({ post, userid }) {
+function getPostValidationError({ post, userid }) {
   if (!post) {
     logger.error(`Invalid post '${post}' supplied`);
     return {
@@ -21,5 +21,5 @@ function getMentorValidationError({ post, userid }) {
 }
 
 module.exports = {
-  getMentorValidationError
+  getPostValidationError
 };
