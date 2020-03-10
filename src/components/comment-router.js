@@ -45,7 +45,7 @@ commentRouter
     if (error) return res.status(400).send(error);
 
     commentService
-      .insertcomment(req.app.get("db"), newcomment)
+      .insertComment(req.app.get("db"), newcomment)
       .then(comment => {
         logger.info(`comment with id ${comment.id} created.`);
         res.status(201).json(serializecomment(comment));
@@ -81,7 +81,7 @@ commentRouter
   .delete((req, res, next) => {
     const { comment_id } = req.params;
     commentService
-      .deletecomment(req.app.get("db"), comment_id)
+      .deleteComment(req.app.get("db"), comment_id)
       .then(numRowsAffected => {
         logger.info(`comment with id ${comment_id} deleted.`);
         res.status(204).end();
@@ -108,7 +108,7 @@ commentRouter
     if (error) return res.status(400).send(error);
 
     commentService
-      .updatecomment(req.app.get("db"), req.params.comment_id, commentToUpdate)
+      .updateComment(req.app.get("db"), req.params.comment_id, commentToUpdate)
       .then(numRowsAffected => {
         res.status(204).end();
       })
