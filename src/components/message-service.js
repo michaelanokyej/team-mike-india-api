@@ -1,6 +1,18 @@
 const messageService = {
   getAllMessages(knex) {
-    return knex.select("*").from("messages");
+    // return knex.select("*").from("messages");
+
+    return knex.select('*')
+    .from('messages')
+    .join('users_messages', 'messages.id', 'users_messages.message_id')
+    .join('users', 'messages.sender_id', 'users.id')
+    .then(response => {
+      console.log(response)
+      return response
+    })
+    .catch(err => {
+      console.log('error:', err)
+    });
   },
   insertMessage(knex, newmessage) {
     return knex
@@ -11,12 +23,20 @@ const messageService = {
         return rows[0];
       });
   },
+  insertUserMessage(knex, newUserMessage) {
+    return knex
+      .insert(newUserMessage)
+      .into("users_messages")
+      .returning("*")
+      .then(rows => {
+        return rows[0];
+      });
+  },
   getById(knex, id) {
     return knex
       .from("messages")
       .select("*")
-      .where("id", id)
-      .first();
+      .where("sender_id", id)
   },
   getByUserName(knex, username) {
     return knex

@@ -1,115 +1,112 @@
-const express = require("express");
-const path = require("path");
-const xss = require("xss");
-const channelRouter = express.Router();
-const bodyParser = express.json();
-const logger = require("../logger");
-const channelService = require("./channel-service");
-const { getChannelValidationError } = require("./channel-validator");
-const jwt = require("jsonwebtoken");
+// const express = require("express");
+// const path = require("path");
+// const xss = require("xss");
+// const channelRouter = express.Router();
+// const bodyParser = express.json();
+// const logger = require("../logger");
+// const { addUser, removeUser, getUser, getUsersInChannel } = require("./channel-service");
+// const app = require("../app");
+// const socketio = require("socket.io");
+// // const http = require("http");
+// const config = require("../config");
+// const { getChannelValidationError } = require("./channel-validator");
+// const jwt = require("jsonwebtoken");
 
-const serializechannel = channel => ({
-  id: channel.id,
-  channel_name: xss(channel.channel_name),
-});
 
-channelRouter
-  .route("/")
+// var server = require("http").createServer(onRequest);
+// var io = require("socket.io")(server, {handlePreflightRequest: (req, res) => {
+//   const headers = {
+//       "Access-Control-Allow-Headers": "Content-Type, Authorization",
+//       "Access-Control-Allow-Origin": req.headers.origin, //or the specific origin you want to give access to,
+//       "Access-Control-Allow-Credentials": true
+//   };
+//   res.writeHead(200, headers);
+//   res.end();
+// }});
 
-  .get((req, res, next) => {
-    channelService
-      .getAllChannels(req.app.get("db"))
-      .then(channels => {
-        res.json(channels.map(serializechannel));
-      })
-      .catch(next);
-  })
-  .post(bodyParser, (req, res, next) => {
-    const { channel_name } = req.body;
-    const newchannel = { channel_name };
+// // Make the express server use sockets
+// // const server = http.createServer(app);
 
-    for (const field of [channel_name]) {
-      if (!newchannel[field]) {
-        logger.error(`${field} is required`);
-        return res.status(400).send({
-          error: { message: `'${field}' is required` }
-        });
-      }
-    }
+// // Create an instance of the socket
+// // const io = socketio(server);
 
-    const error = getChannelValidationError(newchannel);
+// function onRequest(req,res){
+//   res.writeHead(200, {
+//   'Access-Control-Allow-Origin' : '*'
+//   });
+//   };
 
-    if (error) return res.status(400).send(error);
+// io.on("connection", socket => {
+//   // io.origins(['*']);
 
-    channelService
-      .insertChannel(req.app.get("db"), newchannel)
-      .then(channel => {
-        logger.info(`channel with id ${channel.id} created.`);
-        res.status(201).json(serializechannel(channel));
-      })
-      .catch(next);
-  });
+//   console.log("we have a new connection!!!");
 
-channelRouter
-  .route("/:channel_id")
+//   socket.on("join", ({ name, channel }, callback) => {
+//     // the addUser service returns either
+//     // an error property or a user property
+//     const { error, user } = addUser({ id: socket.id, name, channel });
 
-  .all((req, res, next) => {
-    const { channel_id } = req.params;
-    channelService
-      .getById(req.app.get("db"), channel_id)
-      .then(channel => {
-        if (!channel) {
-          logger.error(`channel with id ${channel_id} not found.`);
-          return res.status(404).json({
-            error: { message: `channel Not Found` }
-          });
-        }
+//     // if there is an error, our callback fn will
+//     // dynamically use the error object from our service
+//     if (error) return callback(error);
 
-        res.channel = channel;
-        next();
-      })
-      .catch(next);
-  })
+//     // send the new user a welcome message
+//     socket.emit("message", {
+//       user: "admin",
+//       text: `${user.name}, welcome to the ${user.channel} channel`
+//     });
 
-  .get((req, res) => {
-    res.json(serializechannel(res.channel));
-  })
+//     // Notify all users about the new user
+//     socket.broadcast.to(user.channel).emit("message", {
+//       user: "admin",
+//       text: `${user.name} has joined the channel!`
+//     });
 
-  .delete((req, res, next) => {
-    const { channel_id } = req.params;
-    channelService
-      .deleteChannel(req.app.get("db"), channel_id)
-      .then(numRowsAffected => {
-        logger.info(`channel with id ${channel_id} deleted.`);
-        res.status(204).end();
-      })
-      .catch(next);
-  })
+//     socket.join(user.channel);
 
-  .patch(bodyParser, (req, res, next) => {
-    const { channel_name } = req.body;
-    const channelToUpdate = { channel_name };
+//     io.to(user.channel).emit("channelData", {
+//       channel: user.channel,
+//       users: getUsersInChannel(user.channel)
+//     });
 
-    const numberOfValues = Object.values(channelToUpdate).filter(Boolean).length;
-    if (numberOfValues === 0) {
-      logger.error(`Invalid update without required fields`);
-      return res.status(400).json({
-        error: {
-          message: `Request body must contain 'channel_name'`
-        }
-      });
-    }
+//     callback();
+//   });
 
-    const error = getChannelValidationError(channelToUpdate);
+//   // NB: the admin generated message is "message"  and
+//   // the user generated message is "sendMessage"
 
-    if (error) return res.status(400).send(error);
+//   socket.on("sendMessage", (message, callback) => {
+//     const user = getUser(socket.id);
 
-    channelService
-      .updateChannel(req.app.get("db"), req.params.channel_id, channelToUpdate)
-      .then(numRowsAffected => {
-        res.status(204).end();
-      })
-      .catch(next);
-  });
+//     io.to(user.channel).emit("message", { user: user.name, text: message });
+//     io.to(user.channel).emit("channelData", {
+//       channel: user.channel,
+//       users: getUsersInChannel(user.channel)
+//     });
 
-module.exports = channelRouter;
+//     callback();
+//   });
+
+//   socket.on("disconnect", () => {
+//     const user = removeUser(socket.id);
+
+//     if (user) {
+//       io.to(user.channel).emit("message", {
+//         user: "admin",
+//         text: `${user.name} left`
+//       });
+//     }
+//   });
+// });
+
+// channelRouter
+// .route("/")
+// .get((req, res, next) => {
+//   res.send("server is running");
+// });
+
+// // app.use(router);
+
+// // server.listen(PORT, () => console.log(`Server has started on port ${PORT}`));
+
+// module.exports = channelRouter;

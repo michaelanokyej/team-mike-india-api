@@ -2,7 +2,7 @@ const logger = require("../logger");
 
 const NO_ERRORS = null;
 
-function getMentorValidationError({ messages, userid, channelid }) {
+function getMessageValidationError({ messages, recipient_id, sender_id }) {
   if (!messages) {
     logger.error(`Invalid messages '${messages}' supplied`);
     return {
@@ -10,23 +10,23 @@ function getMentorValidationError({ messages, userid, channelid }) {
         message: `'messages' must be entered`
       }
     };
-  } else if (!userid) {
-    logger.error(`Invalid user id '${userid}' supplied`);
+  } else if (!recipient_id) {
+    logger.error(`Invalid recipient id '${recipient_id}' supplied`);
     return {
       error: {
-        message: `'userID' must be entered`
+        message: `'recipientID' must be entered`
       }
     };
-  } else if (!channelid) {
-    logger.error(`Invalid channel id '${channelid}' supplied`);
+  } else if (!sender_id) {
+    logger.error(`Invalid sender id '${sender_id}' supplied`);
     return {
       error: {
-        message: `'channelID' must be entered`
+        message: `'senderID' must be entered`
       }
     };
   }
 }
 
 module.exports = {
-  getMentorValidationError
+  getMessageValidationError
 };
