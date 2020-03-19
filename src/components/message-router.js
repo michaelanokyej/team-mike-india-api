@@ -57,30 +57,31 @@ messageRouter
         // const postedMessage = {
         //   ...message
         // }
-        const newlyPostedMessage = {};
-        const newUserMessage = {
-          recipient_id: recipient_id,
-          message_id: message.id
-        };
-        messageService
-          .insertUserMessage(req.app.get("db"), newUserMessage)
-          .then(postedUserMessage => {
-            const userMessage = {
-              recipient_id: postedUserMessage.recipient_id
-            };
-            newlyPostedMessage = { ...message, ...userMessage };
-            console.log(newlyPostedMessage);
+        // const newlyPostedMessage = {};
+        // const newUserMessage = {
+        //   recipient_id: recipient_id,
+        //   message_id: message.id
+        // return message
+        // };
+        // messageService
+        //   .insertUserMessage(req.app.get("db"), newUserMessage)
+        //   .then(postedUserMessage => {
+        //     const userMessage = {
+        //       recipient_id: postedUserMessage.recipient_id
+        //     };
+        //     newlyPostedMessage = { ...message, ...userMessage };
+        //     console.log(newlyPostedMessage);
 
-            logger.info(`message with id ${newlyPostedMessage.id} created.`);
-            res.status(201).json(serializemessage(newlyPostedMessage));
-          });
+        //     logger.info(`message with id ${newlyPostedMessage.id} created.`);
+        //     res.status(201).json(serializemessage(newlyPostedMessage));
+          // });
         // const postedMessage = {
         //   ...message, recipient_id: userMessage.recipient_id
         // }
         // console.log(newlyPostedMessage)
 
-        // logger.info(`message with id ${newlyPostedMessage.id} created.`);
-        // res.status(201).json(serializemessage(newlyPostedMessage));
+        logger.info(`message with id ${message.id} created.`);
+        res.status(201).json(serializemessage(message));
       })
       .catch(next);
   });
