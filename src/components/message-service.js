@@ -4,10 +4,10 @@ const messageService = {
 
     return knex.select('*')
     .from('messages')
-    .join('users_messages', 'messages.id', 'users_messages.message_id')
-    .join('users', 'messages.sender_id', 'users.id')
+    .innerJoin('users', 'messages.author_id', 'users.id')
+    .orderBy('messages.created_at')
+    // .groupBy('messages.author_id')
     .then(response => {
-      console.log(response)
       return response
     })
     .catch(err => {
@@ -18,15 +18,6 @@ const messageService = {
     return knex
       .insert(newmessage)
       .into("messages")
-      .returning("*")
-      .then(rows => {
-        return rows[0];
-      });
-  },
-  insertUserMessage(knex, newUserMessage) {
-    return knex
-      .insert(newUserMessage)
-      .into("users_messages")
       .returning("*")
       .then(rows => {
         return rows[0];

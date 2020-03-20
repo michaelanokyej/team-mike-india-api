@@ -10,12 +10,10 @@ const jwt = require("jsonwebtoken");
 
 const serializemessage = message => ({
   id: message.id,
-  sender_id: xss(message.sender_id),
-  send_date: xss(message.send_date),
-  messages: xss(message.messages),
-  notify_date: xss(message.notify_date),
+  author_id: xss(message.author_id),
   recipient_id: xss(message.recipient_id),
-  is_read: xss(message.is_read),
+  created_at: xss(message.created_at),
+  message_body: xss(message.message_body),
   user_first_name: xss(message.first_name),
   user_last_name: xss(message.last_name),
   username: xss(message.username),
@@ -34,12 +32,10 @@ messageRouter
       .catch(next);
   })
   .post(bodyParser, (req, res, next) => {
-    const { messages, recipient_id, sender_id } = req.body;
-    const postedMessageBody = { messages, recipient_id, sender_id };
-    const newmessage = { messages, sender_id };
-
-    for (const field of ["messages", "recipient_id", "sender_id"]) {
-      if (!postedMessageBody[field]) {
+    const { author_id, recipient_id, message_body } = req.body;
+    const newmessage = { author_id, recipient_id, message_body };
+    for (const field of ["author_id", "recipient_id", "message_body"]) {
+      if (!newmessage[field]) {
         logger.error(`${field} is required`);
         return res.status(400).send({
           error: { message: `'${field}' is required` }
@@ -47,39 +43,13 @@ messageRouter
       }
     }
 
-    const error = getMessageValidationError(postedMessageBody);
+    const error = getMessageValidationError(newmessage);
 
     if (error) return res.status(400).send(error);
 
     messageService
       .insertMessage(req.app.get("db"), newmessage)
       .then(message => {
-        // const postedMessage = {
-        //   ...message
-        // }
-        // const newlyPostedMessage = {};
-        // const newUserMessage = {
-        //   recipient_id: recipient_id,
-        //   message_id: message.id
-        // return message
-        // };
-        // messageService
-        //   .insertUserMessage(req.app.get("db"), newUserMessage)
-        //   .then(postedUserMessage => {
-        //     const userMessage = {
-        //       recipient_id: postedUserMessage.recipient_id
-        //     };
-        //     newlyPostedMessage = { ...message, ...userMessage };
-        //     console.log(newlyPostedMessage);
-
-        //     logger.info(`message with id ${newlyPostedMessage.id} created.`);
-        //     res.status(201).json(serializemessage(newlyPostedMessage));
-          // });
-        // const postedMessage = {
-        //   ...message, recipient_id: userMessage.recipient_id
-        // }
-        // console.log(newlyPostedMessage)
-
         logger.info(`message with id ${message.id} created.`);
         res.status(201).json(serializemessage(message));
       })
@@ -87,37 +57,37 @@ messageRouter
   });
 
 messageRouter
-  .route("/:userid")
+  .route("/:messageID")
 
-  .all((req, res, next) => {
-    const { userid } = req.params;
-    console.log(userid);
-    messageService
-      .getById(req.app.get("db"), userid)
-      .then(messages => {
-        if (!messages) {
-          logger.error(`user with id ${userid} has no messages.`);
-          return res.status(404).json({
-            error: { message: `There was an error retrieving your messages.` }
-          });
-        }
+  // .all((req, res, next) => {
+  //   const { messageID } = req.params;
+  //   console.log(messageID);
+  //   messageService
+  //     .getById(req.app.get("db"), messageID)
+  //     .then(messages => {
+  //       if (!messages) {
+  //         logger.error(`user with id ${messageID} has no messages.`);
+  //         return res.status(404).json({
+  //           error: { message: `There was an error retrieving your messages.` }
+  //         });
+  //       }
 
-        res.messages = messages;
-        next();
-      })
-      .catch(next);
-  })
+  //       res.messages = messages;
+  //       next();
+  //     })
+  //     .catch(next);
+  // })
 
-  .get((req, res) => {
-    res.json(res.messages.map(serializemessage));
-  })
+  // .get((req, res) => {
+  //   res.json(res.messages.map(serializemessage));
+  // })
 
   .delete((req, res, next) => {
-    const { message_id } = req.params;
+    const { messageID } = req.params;
     messageService
-      .deleteMessage(req.app.get("db"), message_id)
+      .deleteMessage(req.app.get("db"), messageID)
       .then(numRowsAffected => {
-        logger.info(`message with id ${message_id} deleted.`);
+        logger.info(`message with id ${messageID} deleted.`);
         res.status(204).end();
       })
       .catch(next);
