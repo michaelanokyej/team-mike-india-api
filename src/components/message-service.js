@@ -1,12 +1,10 @@
 const messageService = {
   getAllMessages(knex) {
-    // return knex.select("*").from("messages");
 
     return knex.select('*')
     .from('messages')
-    .innerJoin('users', 'messages.author_id', 'users.id')
+    // .innerJoin('users', 'messages.author_id', 'users.id')
     .orderBy('messages.created_at')
-    // .groupBy('messages.author_id')
     .then(response => {
       return response
     })

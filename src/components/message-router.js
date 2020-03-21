@@ -14,10 +14,10 @@ const serializemessage = message => ({
   recipient_id: xss(message.recipient_id),
   created_at: xss(message.created_at),
   message_body: xss(message.message_body),
-  user_first_name: xss(message.first_name),
-  user_last_name: xss(message.last_name),
-  username: xss(message.username),
-  email: xss(message.email)
+  // user_first_name: xss(message.first_name),
+  // user_last_name: xss(message.last_name),
+  // username: xss(message.username),
+  // email: xss(message.email)
 });
 
 messageRouter
