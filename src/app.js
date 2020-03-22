@@ -13,6 +13,7 @@ const postRouter = require("./components/post-router");
 const messageRouter = require("./components/message-router");
 const commentRouter = require("./components/comment-router");
 const authRouter = require("./components/auth-router");
+const userFollowersRouter = require("./components/user-followers-router");
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use("/api/users", userRouter);
 app.use("/api/mentors", mentorRouter);
 app.use("/api/mentees", menteeRouter);
 app.use("/api/posts", postRouter);
+app.use("/api/userfollowers", userFollowersRouter);
 // app.use("/api/chat", channelRouter);
 app.use("/api/messages", messageRouter);
 app.use("/api/comments", commentRouter);
