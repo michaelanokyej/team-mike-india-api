@@ -1,6 +1,6 @@
 const postService = {
   getAllPosts(knex) {
-    return knex.select("*").from("posts");
+    return knex.select("*").from("posts").orderBy('posts.posted', 'desc');
   },
   insertPost(knex, newPost) {
     return knex
