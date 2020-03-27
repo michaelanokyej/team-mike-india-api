@@ -17,7 +17,7 @@ function getUserFollowerValidationError({ userid, followerid, customid }) {
         message: `'last name' must be entered`
       }
     };
-  } else if (!connectionid) {
+  } else if (!customid) {
     logger.error(`Invalid custom id '${customid}' supplied`);
     return {
       error: {
