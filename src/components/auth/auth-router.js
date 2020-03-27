@@ -3,8 +3,8 @@ const path = require("path");
 const xss = require("xss");
 const authRouter = express.Router();
 const bodyParser = express.json();
-const logger = require("../logger");
-const userService = require("./user-service");
+const logger = require("../../logger");
+const userService = require("../users/user-service");
 const { getAuthValidationError } = require("./auth-validator");
 const jwt = require("jsonwebtoken");
 

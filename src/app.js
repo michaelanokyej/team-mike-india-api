@@ -5,15 +5,14 @@ const cors = require("cors");
 const helmet = require("helmet");
 const { NODE_ENV } = require("./config");
 const errorHandler = require("./error-handler");
-const userRouter = require("./components/user-router");
-const mentorRouter = require("./components/mentor-router");
-const menteeRouter = require("./components/mentee-router");
-const postRouter = require("./components/post-router");
-// const channelRouter = require("./components/channel-router");
-const messageRouter = require("./components/message-router");
-const commentRouter = require("./components/comment-router");
-const authRouter = require("./components/auth-router");
-const userFollowersRouter = require("./components/user-followers-router");
+const userRouter = require("./components/users/user-router");
+const mentorRouter = require("./components/mentor/mentor-router");
+const menteeRouter = require("./components/mentee/mentee-router");
+const postRouter = require("./components/posts/post-router");
+const messageRouter = require("./components/messages/message-router");
+const commentRouter = require("./components/comments/comment-router");
+const authRouter = require("./components/auth/auth-router");
+const userFollowersRouter = require("./components/user-followers/user-followers-router");
 
 const app = express();
 

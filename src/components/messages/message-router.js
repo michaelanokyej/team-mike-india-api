@@ -3,7 +3,7 @@ const path = require("path");
 const xss = require("xss");
 const messageRouter = express.Router();
 const bodyParser = express.json();
-const logger = require("../logger");
+const logger = require("../../logger");
 const messageService = require("./message-service");
 const { getMessageValidationError } = require("./message-validator");
 const jwt = require("jsonwebtoken");
@@ -13,11 +13,7 @@ const serializemessage = message => ({
   author_id: xss(message.author_id),
   recipient_id: xss(message.recipient_id),
   created_at: xss(message.created_at),
-  message_body: xss(message.message_body),
-  // user_first_name: xss(message.first_name),
-  // user_last_name: xss(message.last_name),
-  // username: xss(message.username),
-  // email: xss(message.email)
+  message_body: xss(message.message_body)
 });
 
 messageRouter
@@ -58,29 +54,6 @@ messageRouter
 
 messageRouter
   .route("/:messageID")
-
-  // .all((req, res, next) => {
-  //   const { messageID } = req.params;
-  //   console.log(messageID);
-  //   messageService
-  //     .getById(req.app.get("db"), messageID)
-  //     .then(messages => {
-  //       if (!messages) {
-  //         logger.error(`user with id ${messageID} has no messages.`);
-  //         return res.status(404).json({
-  //           error: { message: `There was an error retrieving your messages.` }
-  //         });
-  //       }
-
-  //       res.messages = messages;
-  //       next();
-  //     })
-  //     .catch(next);
-  // })
-
-  // .get((req, res) => {
-  //   res.json(res.messages.map(serializemessage));
-  // })
 
   .delete((req, res, next) => {
     const { messageID } = req.params;

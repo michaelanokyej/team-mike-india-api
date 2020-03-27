@@ -1,37 +1,39 @@
 const express = require("express");
 const path = require("path");
 const xss = require("xss");
-const userFollowersRouter = express.Router();
+const userRouter = express.Router();
 const bodyParser = express.json();
-const logger = require("../logger");
-const userFollowerService = require("./user-follower-service");
-const { getUserFollowerValidationError } = require("./user-follower-validator");
+const logger = require("../../logger");
+const userService = require("./user-service");
+const { getUserValidationError } = require("./user-validator");
 const jwt = require("jsonwebtoken");
 
 const serializeuser = user => ({
-  connectionid: user.id,
-  userid: user.userid,
-  followerid: user.followerid,
-  customid: user.customid
+  id: user.id,
+  username: xss(user.username),
+  first_name: xss(user.first_name),
+  last_name: xss(user.last_name),
+  email: xss(user.email),
+  password: xss(user.password)
 });
 
-userFollowersRouter
+userRouter
   .route("/")
 
   .get((req, res, next) => {
-    userFollowerService
-      .getAllUserFollowers(req.app.get("db"))
-      .then(userfollowers => {
-        res.json(userfollowers.map(serializeuser));
+    userService
+      .getAllUsers(req.app.get("db"))
+      .then(users => {
+        res.json(users.map(serializeuser));
       })
       .catch(next);
   })
   .post(bodyParser, (req, res, next) => {
-    const { userid, followerid, customid } = req.body;
-    const newUserFollower = { userid, followerid, customid };
+    const { first_name, last_name, email, username, password } = req.body;
+    const newUser = { first_name, last_name, email, username, password };
 
-    for (const field of ["userid", "followerid", "customid"]) {
-      if (!newUserFollower[field]) {
+    for (const field of ["first_name", "last_name", "email", "username", "password"]) {
+      if (!newUser[field]) {
         logger.error(`${field} is required`);
         return res.status(400).send({
           error: { message: `'${field}' is required` }
@@ -39,25 +41,25 @@ userFollowersRouter
       }
     }
 
-    const error = getUserFollowerValidationError(newUserFollower);
+    const error = getUserValidationError(newUser);
 
     if (error) return res.status(400).send(error);
 
-    userFollowerService
-      .insertUserFollower(req.app.get("db"), newUserFollower)
-      .then(connection => {
-        logger.info(`user with id ${connection.id} created.`);
-        res.status(201).json(serializeuser(connection));
+    userService
+      .insertUser(req.app.get("db"), newUser)
+      .then(user => {
+        logger.info(`user with id ${user.id} created.`);
+        res.status(201).json(serializeuser(user));
       })
       .catch(next);
   });
 
-userFollowersRouter
+userRouter
   .route("/:user_id")
 
   .all((req, res, next) => {
     const { user_id } = req.params;
-    userFollowerService
+    userService
       .getById(req.app.get("db"), user_id)
       .then(user => {
         if (!user) {
@@ -79,7 +81,7 @@ userFollowersRouter
 
   .delete((req, res, next) => {
     const { user_id } = req.params;
-    userFollowerService
+    userService
       .deleteUser(req.app.get("db"), user_id)
       .then(numRowsAffected => {
         logger.info(`user with id ${user_id} deleted.`);
@@ -102,11 +104,11 @@ userFollowersRouter
       });
     }
 
-    const error = getUserFollowerValidationError(userToUpdate);
+    const error = getUserValidationError(userToUpdate);
 
     if (error) return res.status(400).send(error);
 
-    userFollowerService
+    userService
       .updateUser(req.app.get("db"), req.params.user_id, userToUpdate)
       .then(numRowsAffected => {
         res.status(204).end();
@@ -114,4 +116,4 @@ userFollowersRouter
       .catch(next);
   });
 
-module.exports = userFollowersRouter;
+module.exports = userRouter;

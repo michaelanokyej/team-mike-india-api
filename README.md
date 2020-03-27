@@ -1,5 +1,12 @@
 # UpLift API
 
+## Technology Stack
+> 1. Server Architecture: Nodejs (Express)
+> 2. Database: Postgresql, knex 
+> 3. Middlewares: helmet, cors, morgan
+> 4. Security: jsonwebtoken
+> 5. Tests: chai, mocha
+
 ## Description
 
 > This is the RESTful API for the UpLift app. The API allows the client-side to retreive
