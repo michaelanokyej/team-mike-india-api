@@ -2,7 +2,7 @@ const logger = require("../logger");
 
 const NO_ERRORS = null;
 
-function getUserFollowerValidationError({ userid, followerid, connectionid }) {
+function getUserFollowerValidationError({ userid, followerid, customid }) {
   if (!userid) {
     logger.error(`Invalid first name '${userid}' supplied`);
     return {
@@ -18,10 +18,10 @@ function getUserFollowerValidationError({ userid, followerid, connectionid }) {
       }
     };
   } else if (!connectionid) {
-    logger.error(`Invalid connection id '${connectionid}' supplied`);
+    logger.error(`Invalid custom id '${customid}' supplied`);
     return {
       error: {
-        message: `'The special connection id' must be entered`
+        message: `'The custom connection id' must be entered`
       }
     };
   }
