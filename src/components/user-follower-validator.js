@@ -2,7 +2,7 @@ const logger = require("../logger");
 
 const NO_ERRORS = null;
 
-function getUserFollowerValidationError({ userid, followerid }) {
+function getUserFollowerValidationError({ userid, followerid, connectionid }) {
   if (!userid) {
     logger.error(`Invalid first name '${userid}' supplied`);
     return {
@@ -15,6 +15,13 @@ function getUserFollowerValidationError({ userid, followerid }) {
     return {
       error: {
         message: `'last name' must be entered`
+      }
+    };
+  } else if (!connectionid) {
+    logger.error(`Invalid connection id '${connectionid}' supplied`);
+    return {
+      error: {
+        message: `'The special connection id' must be entered`
       }
     };
   }

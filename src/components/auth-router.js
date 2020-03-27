@@ -78,7 +78,7 @@ authRouter
       .getByUserEmail(req.app.get("db"), user.email)
       .then(verifiedUser => {
         if (verifiedUser.password !== user.password) {
-          res.send("Err: User not found, please verify password");
+          res.err("Err: User not found, please verify password");
         } else {
           return verifiedUser;
         }

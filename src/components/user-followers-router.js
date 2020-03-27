@@ -9,9 +9,10 @@ const { getUserFollowerValidationError } = require("./user-follower-validator");
 const jwt = require("jsonwebtoken");
 
 const serializeuser = user => ({
-  connectionid: user.id,
+  id: user.id,
   userid: user.userid,
-  followerid: user.followerid
+  followerid: user.followerid,
+  connectionid: user.connectionid
 });
 
 userFollowersRouter
@@ -26,10 +27,10 @@ userFollowersRouter
       .catch(next);
   })
   .post(bodyParser, (req, res, next) => {
-    const { userid, followerid } = req.body;
-    const newUserFollower = { userid, followerid };
+    const { userid, followerid, connectionid } = req.body;
+    const newUserFollower = { userid, followerid, connectionid };
 
-    for (const field of ["userid", "followerid"]) {
+    for (const field of ["userid", "followerid", "connectionid"]) {
       if (!newUserFollower[field]) {
         logger.error(`${field} is required`);
         return res.status(400).send({
