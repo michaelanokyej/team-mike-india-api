@@ -10,5 +10,5 @@ CREATE TABLE messages (
   message_body VARCHAR NOT NULL,
   author_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   recipient_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-  created_at timestamp default clock_timestamp()
+  created_at TIMESTAMP DEFAULT now() NOT NULL
 );
