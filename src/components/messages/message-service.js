@@ -3,7 +3,6 @@ const messageService = {
 
     return knex.select('*')
     .from('messages')
-    // .innerJoin('users', 'messages.author_id', 'users.id')
     .orderBy('messages.created_at')
     .then(response => {
       return response

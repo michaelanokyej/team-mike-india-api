@@ -11,8 +11,6 @@ const jwt = require("jsonwebtoken");
 const serializementor = mentor => ({
   id: mentor.id,
   username: xss(mentor.username),
-  // f_name: xss(mentor.first_name),
-  // l_name: xss(mentor.last_name),
   email: xss(mentor.email),
   primaryuserid: xss(mentor.primaryuserid)
 });
@@ -30,10 +28,8 @@ mentorRouter
   })
   .post(bodyParser, (req, res, next) => {
     const { email, username, primaryuserid } = req.body;
-    // const newmentor = { f_name, l_name, email, username, primaryuserid };
     const newmentor = { email, username, primaryuserid };
 
-    // for (const field of ["f_name", "l_name", "email", "mentorname", "password"]) {
     for (const field of ["email", "username", "primaryuserid"]) {
       if (!newmentor[field]) {
         logger.error(`${field} is required`);
@@ -93,9 +89,7 @@ mentorRouter
   })
 
   .patch(bodyParser, (req, res, next) => {
-    // const { f_name, l_name, email, password } = req.body;
     const { email, username, primaryuserid } = req.body;
-    // const mentorToUpdate = { f_name, l_name, email, password };
     const mentorToUpdate = { email, username, primaryuserid };
 
     const numberOfValues = Object.values(mentorToUpdate).filter(Boolean).length;

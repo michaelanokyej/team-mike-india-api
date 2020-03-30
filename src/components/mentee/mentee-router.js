@@ -27,10 +27,8 @@ menteeRouter
   })
   .post(bodyParser, (req, res, next) => {
     const { userid, mentorid } = req.body;
-    // const newmentee = { f_name, l_name, email, username, primaryuserid };
     const newmentee = { userid, mentorid };
 
-    // for (const field of ["f_name", "l_name", "email", "menteename", "password"]) {
     for (const field of ["userid", "mentor"]) {
       if (!newmentee[field]) {
         logger.error(`${field} is required`);
@@ -90,9 +88,7 @@ menteeRouter
   })
 
   .patch(bodyParser, (req, res, next) => {
-    // const { f_name, l_name, email, password } = req.body;
     const { email, username, primaryuserid } = req.body;
-    // const menteeToUpdate = { f_name, l_name, email, password };
     const menteeToUpdate = { email, username, primaryuserid };
 
     const numberOfValues = Object.values(menteeToUpdate).filter(Boolean).length;

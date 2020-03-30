@@ -70,7 +70,6 @@ authRouter
 
     const error = getAuthValidationError(user);
 
-    // if (error) return res.status(400).send(error);
     if (error) return res.status(400);
 
 
