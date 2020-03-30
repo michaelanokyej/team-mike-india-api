@@ -76,7 +76,7 @@ messageRouter
       logger.error(`Invalid update without required fields`);
       return res.status(400).json({
         error: {
-          message: `Request body must content either 'userid, 'channelid' or 'message'`
+          message: `Request body must contain either 'userid, 'channelid' or 'message'`
         }
       });
     }
